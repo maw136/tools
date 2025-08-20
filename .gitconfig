@@ -1,0 +1,50 @@
+[core]
+	editor = code-insiders --wait
+	autocrlf = false
+	hooksPath = $GIT_DIR/hooks
+	longpaths = true
+[user]
+	name = Maciej Walanus
+	email = mwalanus@outlook.com
+	signingkey = B13546DD2BDCFAC3
+[diff]
+	guitool = kdiff3
+	tool = kdiff3
+	algorithm = histogram
+[difftool "kdiff3"]
+	path = C:/Program Files/KDiff3/kdiff3.exe
+	cmd = \"C:/Program Files/KDiff3/kdiff3.exe\" \"$LOCAL\" \"$REMOTE\"
+[merge]
+	guitool = kdiff3
+	tool = kdiff3
+[mergetool "kdiff3"]
+	path = C:/Program Files/KDiff3/kdiff3.exe
+	cmd = \"C:/Program Files/KDiff3/kdiff3.exe\" \"$BASE\" \"$LOCAL\" \"$REMOTE\" -o \"$MERGED\"
+[pull]
+	rebase = true
+[fetch]
+	prune = true
+[rebase]
+	autoStash = true
+	autosquash = true
+	updateRefs = false
+[mergetool]
+	keepBackup = false
+[status]
+	submoduleSummary = true
+[push]
+	default = upstream
+	autoSetupRemove = true
+[rerere]
+	enabled = true
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[commit]
+	gpgsign = true
+[gpg]
+	program = c:/Program Files (x86)/GnuPG/bin/gpg.exe
+[maintenance]
+
