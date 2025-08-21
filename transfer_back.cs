@@ -10,14 +10,11 @@ if (inputFile.EndsWith(".part", StringComparison.OrdinalIgnoreCase))
 {
     Console.WriteLine("Reading parts...");
 
-    outputFile = TrimLast(outputFile, ".part");
-
     var justName = Path.GetFileName(inputFile);
     var dir = Path.GetDirectoryName(inputFile);
 
     var nameParts = justName.Split('.');
 
-    var number = nameParts[^2];
     var originalName = string.Join('.', nameParts[0..^2]);
 
     for (int i = 0; ; i++)
@@ -32,6 +29,8 @@ if (inputFile.EndsWith(".part", StringComparison.OrdinalIgnoreCase))
             break;
         }
     }
+
+    outputFile = Path.Join(dir, originalName);
 }
 else
 {
