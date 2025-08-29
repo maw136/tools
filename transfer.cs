@@ -1,5 +1,6 @@
 #!/usr/local/share/dotnet/dotnet run
 
+using System.Diagnostics;
 using System.Text;
 
 var inputFile = args[0];
@@ -8,7 +9,6 @@ var partSize = 38535168;
 
 Console.WriteLine($"Input: {inputFile}, Output: {outputFile}");
 
-//using HugeMemoryStream tmpMs = new();
 using FileStream inputFs = File.OpenRead(inputFile);
 Console.WriteLine($"Size: {inputFs.Length}");
 
@@ -24,8 +24,14 @@ if (inputFs.Length > partSize)
         {
             break;
         }
+
         var base64arr = Convert.ToBase64String(contentBs, 0, read);
+        var justName = $"{Path.GetFileName(outputFile)}.{i}.part";
         File.WriteAllText($"{outputFile}.{i}.part", base64arr);
+        using var gitAdd = Process.Start("git", $"add \"{justName}\"");
+        gitAdd.WaitForExit();
+        using var gitCommit = Process.Start("git", $"commit -m \"{justName}\"");
+        gitCommit.WaitForExit();
     }
 }
 else
@@ -35,6 +41,15 @@ else
     var read = inputFs.Read(contentBs, 0, contentBs.Length);
     var base64arr = Convert.ToBase64String(contentBs, 0, read);
     File.WriteAllText(outputFile, base64arr, Encoding.ASCII);
+
+    var justName = Path.GetFileName(outputFile);
+    using var gitAdd = Process.Start("git", $"add \"{justName}\"");
+    gitAdd.WaitForExit();
+    using var gitCommit = Process.Start("git", $"commit -m \"{justName}\"");
+    gitCommit.WaitForExit();
 }
+
+using var gitPush = Process.Start("git", "push");
+gitPush.WaitForExit();
 
 Console.WriteLine("Finished");
