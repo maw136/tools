@@ -4,29 +4,36 @@ using System.Text;
 
 var inputFile = args[0];
 var outputFile = args[0] + ".txt";
-var partSize = 49 * 1024 * 1024;
+var partSize = 38535168;
 
 Console.WriteLine($"Input: {inputFile}, Output: {outputFile}");
 
-var content = File.ReadAllBytes(inputFile);
-var base64arr = Convert.ToBase64String(content);
-if (base64arr.Length > partSize) // assume 1B/1char
+//using HugeMemoryStream tmpMs = new();
+using FileStream inputFs = File.OpenRead(inputFile);
+Console.WriteLine($"Size: {inputFs.Length}");
+
+if (inputFs.Length > partSize)
 {
     Console.WriteLine("Writing parts...");
-    var leftover = base64arr.Length;
-    var parts = (int)Math.Ceiling(base64arr.Length / (double)partSize);
-    for (int i = 0; i < parts; i++)
+    byte[] contentBs = new byte[partSize];
+    for (int i = 1; ; i++)
     {
-        var spanSize = leftover >= partSize ? partSize : leftover;
-        File.WriteAllText($"{outputFile}.{i}.part", base64arr.AsSpan(partSize * i, spanSize));
-        leftover -= partSize;
-        //File.WriteAllText(outputFile, base64arr, Encoding.ASCII);
+        // multipart
+        var read = inputFs.Read(contentBs, 0, partSize);
+        if (read < 1)
+        {
+            break;
+        }
+        var base64arr = Convert.ToBase64String(contentBs, 0, read);
+        File.WriteAllText($"{outputFile}.{i}.part", base64arr);
     }
-    // split
 }
 else
 {
     Console.WriteLine("Writing single file...");
+    byte[] contentBs = new byte[inputFs.Length];
+    var read = inputFs.Read(contentBs, 0, contentBs.Length);
+    var base64arr = Convert.ToBase64String(contentBs, 0, read);
     File.WriteAllText(outputFile, base64arr, Encoding.ASCII);
 }
 

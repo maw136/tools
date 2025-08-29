@@ -5,7 +5,6 @@ var outputFile = args[0];
 
 Console.WriteLine($"Input: {inputFile}, Output: {outputFile}");
 
-var content = "";
 if (inputFile.EndsWith(".part", StringComparison.OrdinalIgnoreCase))
 {
     Console.WriteLine("Reading parts...");
@@ -14,34 +13,37 @@ if (inputFile.EndsWith(".part", StringComparison.OrdinalIgnoreCase))
     var dir = Path.GetDirectoryName(inputFile);
 
     var nameParts = justName.Split('.');
-
     var originalName = string.Join('.', nameParts[0..^2]);
+
+    outputFile = Path.Join(dir, originalName).EndsWith(".txt", StringComparison.OrdinalIgnoreCase) ? TrimLast(outputFile, ".txt") : outputFile + ".org";
+    File.Delete(outputFile);
 
     for (int i = 0; ; i++)
     {
         var partPath = Path.Join(dir, $"{originalName}.{i}.part");
         if (File.Exists(partPath))
         {
-            content += File.ReadAllText(partPath);
+            var content = File.ReadAllText(inputFile);
+            var binary = Convert.FromBase64String(content);
+            File.AppendAllBytes(outputFile, binary);
         }
         else
         {
             break;
         }
     }
-
-    outputFile = Path.Join(dir, originalName);
 }
 else
 {
     Console.WriteLine("Reading single file...");
-    content = File.ReadAllText(inputFile);
+
+    outputFile = outputFile.EndsWith(".txt", StringComparison.OrdinalIgnoreCase) ? TrimLast(outputFile, ".txt") : outputFile + ".org";
+    File.Delete(outputFile);
+
+    var content = File.ReadAllText(inputFile);
+    var binary = Convert.FromBase64String(content);
+    File.WriteAllBytes(outputFile, binary);
 }
-
-outputFile = outputFile.EndsWith(".txt", StringComparison.OrdinalIgnoreCase) ? TrimLast(outputFile, ".txt") : outputFile + ".org";
-
-var binary = Convert.FromBase64String(content);
-File.WriteAllBytes(outputFile, binary);
 
 Console.WriteLine("Finished");
 
