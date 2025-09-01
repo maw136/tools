@@ -5,7 +5,7 @@ using System.Text;
 
 var inputFile = args[0];
 var outputFile = args[0] + ".txt";
-var partSize = 38535168;
+var partSize = 1335466393;
 
 Console.WriteLine($"Input: {inputFile}, Output: {outputFile}");
 
