@@ -1,13 +1,12 @@
-// certgen.cs
-#r "nuget: BouncyCastle, 1.8.9"
+#:package BouncyCastle@*
 
-using System;
 using System.Text;
 using System.IO;
 using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Prng;
+using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
 using Org.BouncyCastle.OpenSsl;
